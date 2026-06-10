@@ -28,6 +28,12 @@ class FilmsViewModel {
     var state: State = .idle
     var films: [Film] = []
     
+    private let service: APIService
+    
+    init(service: APIService = DefaultAPIService()) {
+        self.service = service
+    }
+    
     func fetch() async {
         
         guard state == .idle else { return }
@@ -35,36 +41,11 @@ class FilmsViewModel {
         state = .loading
         
         do {
-            films = try await fetchFilms()
+            films = try await service.fetchFilms()
             state = .loaded(films)
         } catch {
             state = .error(error.localizedDescription)
         }
     }
     
-    
-    private func fetchFilms() async throws -> [Film] {
-        guard let url = URL(string: "https://ghibliapi.vercel.app/films") else {
-            throw APIError.invalidURL
-        }
-        
-        //check http response
-        guard let httpResponse = try await URLSession.shared.data(from: url).1 as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
-            throw APIError.invalidResponse
-        }
-        
-        do {
-            let (data, response) = try await
-            URLSession.shared.data(from: url)
-            
-            films = try JSONDecoder().decode([Film].self, from: data)
-            
-            return films
-            
-        } catch let error as DecodingError{
-            throw APIError.decoding(error)
-        } catch let error as URLError {
-            throw APIError.networkError(error)
-        }
-    }
 }

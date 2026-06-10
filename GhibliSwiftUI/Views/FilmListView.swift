@@ -11,7 +11,7 @@ import Observation
 
 struct FilmListView: View {
     
-    @State private var filmsViewModel = FilmsViewModel()
+    var filmsViewModel = FilmsViewModel()
     
     var body: some View {
         
@@ -43,5 +43,8 @@ struct FilmListView: View {
 }
 
 #Preview {
-    FilmListView()
+    
+    @State @Previewable var vm = FilmsViewModel(service: MockAPIService())
+    
+    FilmListView(filmsViewModel: vm)
 }
