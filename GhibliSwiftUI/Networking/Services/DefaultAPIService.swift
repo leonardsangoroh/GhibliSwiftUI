@@ -11,8 +11,9 @@ import Foundation
 
 struct DefaultAPIService: APIService {
     
-    func fetchFilms() async throws -> [Film] {
-        guard let url = URL(string: "https://ghibliapi.vercel.app/films") else {
+    func fetch<T: Decodable>(from URLString: String, type: T.Type) async throws -> T {
+        
+        guard let url = URL(string: URLString) else {
             throw APIError.invalidURL
         }
         
@@ -24,14 +25,22 @@ struct DefaultAPIService: APIService {
         do {
             let (data, response) = try await URLSession.shared.data(from: url)
             
-            let films = try JSONDecoder().decode([Film].self, from: data)
+            let data_array = try JSONDecoder().decode(type, from: data)
             
-            return films
+            return data_array
             
         } catch let error as DecodingError{
             throw APIError.decoding(error)
         } catch let error as URLError {
             throw APIError.networkError(error)
         }
+    }
+    
+    func fetchFilms() async throws -> [Film] {
+        return try await fetch(from: "https://ghibliapi.vercel.app/films", type: [Film].self)
+    }
+    
+    func fetchPerson(from URLString: String) async throws -> Person {
+        return try await fetch(from: URLString, type: Person.self)
     }
 }
