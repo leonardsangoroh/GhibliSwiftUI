@@ -9,5 +9,5 @@ import Foundation
 
 protocol APIService {
     func fetchFilms() async throws -> [Film]
-    //func fetchPerson(from URLString: String) async throws -> Person
+    func fetchPerson(from URLString: String) async throws -> Person
 }
