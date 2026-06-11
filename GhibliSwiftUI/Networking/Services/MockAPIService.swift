@@ -25,6 +25,7 @@ struct MockAPIService: APIService {
         return try JSONDecoder().decode(SampleData.self, from: data)
     }
     
+    //MARK: - protocol conformance
     func fetchFilms() async throws -> [Film] {
         
         let data = try loadSampleData()
@@ -32,9 +33,18 @@ struct MockAPIService: APIService {
         return data.films
     }
     
+    //MARK: - protocol conformance
     func fetchPerson(from URLString: String) async throws -> Person {
         let data = try loadSampleData()
         
         return data.people.first!
+    }
+    
+    //MARK: - preview/test use only
+    func fetchFilm() async throws -> Film {
+        
+        let data = try loadSampleData()
+        
+        return data.films.first!
     }
 }

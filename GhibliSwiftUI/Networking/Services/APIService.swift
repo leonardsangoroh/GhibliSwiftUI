@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol APIService {
+protocol APIService: Sendable {
     func fetchFilms() async throws -> [Film]
     func fetchPerson(from URLString: String) async throws -> Person
 }

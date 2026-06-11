@@ -8,13 +8,6 @@
 import Foundation
 import Observation
 
-enum APIError: LocalizedError {
-    case invalidURL
-    case invalidResponse
-    case decoding(Error)
-    case networkError(Error)
-}
-
 @Observable
 class FilmsViewModel {
     
