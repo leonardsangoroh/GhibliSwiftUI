@@ -8,6 +8,7 @@
 import Foundation
 import Observation
 
+@Observable
 class FilmDetailViewModel {
     
     enum State: Equatable {
@@ -19,7 +20,7 @@ class FilmDetailViewModel {
     
     var state:State = .idle
     
-    let service: APIService
+    private let service: APIService
     
     init(service: APIService = DefaultAPIService()) {
         self.service = service
