@@ -26,18 +26,22 @@ struct FilmListView: View {
                 }
                 
                 case .loaded(let films):
-                List(films) { films in
-                    Text(films.title)
+                List(films) { film in
+                    NavigationLink(value: film) {
+                        Text(film.title)
+                    }
                 }
-                
+                .navigationDestination(for: Film.self) { film in
+                    FilmDetailView(film: film)
+                }
                 case .error(let error):
                 Text(error)
                     .foregroundStyle(Color.red)
             }
         }
         .task {
-        await filmsViewModel.fetch()
-    }
+            await filmsViewModel.fetch()
+        }
     }
     
 }
