@@ -8,16 +8,30 @@
 import Foundation
 import Observation
 
+@Observable
 class FilmDetailViewModel {
-    var people: [Person] = []
     
-    let service: APIService
+    enum State: Equatable {
+        case idle
+        case loading
+        case loaded([Person])
+        case error(String)
+    }
+    
+    var state:State = .idle
+    
+    private let service: APIService
     
     init(service: APIService = DefaultAPIService()) {
         self.service = service
     }
     
     func fetch(for film: Film) async {
+        
+        guard state != .loading else { return }
+        
+        state = .loading
+        var loadedPeople: [Person] = []
         
         do {
             try await withThrowingTaskGroup(of: Person.self) { group in
@@ -29,9 +43,11 @@ class FilmDetailViewModel {
                 
                 // collect results as they complete
                 for try await person in group {
-                    people.append(person)
+                    loadedPeople.append(person)
                 }
             }
+            
+            state = .loaded(loadedPeople)
             
         } catch {
             
@@ -48,7 +64,16 @@ import Playgrounds
     let film = try await MockAPIService().fetchFilm()
     await vm.fetch(for: film)
     
-    for person in vm.people {
-        print(person)
+    switch vm.state {
+    case .idle:
+        print("idle")
+    case .loading:
+        print("loading")
+    case .loaded(let people):
+        for person in people {
+            print(person)
+        }
+    case .error(let string):
+        print(string)
     }
 }

@@ -41,7 +41,7 @@ struct MockAPIService: APIService {
     }
     
     //MARK: - preview/test use only
-    func fetchFilm() async throws -> Film {
+    func fetchFilm() throws -> Film {
         
         let data = try loadSampleData()
         

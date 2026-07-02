@@ -19,7 +19,6 @@ class FilmsViewModel {
     }
     
     var state: State = .idle
-    var films: [Film] = []
     
     private let service: APIService
     
@@ -32,6 +31,7 @@ class FilmsViewModel {
         guard state == .idle else { return }
         
         state = .loading
+        var films: [Film] = []
         
         do {
             films = try await service.fetchFilms()
