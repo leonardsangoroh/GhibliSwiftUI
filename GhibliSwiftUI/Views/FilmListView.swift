@@ -11,21 +11,9 @@ import Observation
 
 struct FilmListView: View {
     
-    var filmsViewModel = FilmsViewModel()
+    var films: [Film]
     
     var body: some View {
-        
-        NavigationStack {
-            switch filmsViewModel.state {
-                case .idle:
-                    Text("No films yet.")
-                
-                case .loading:
-                ProgressView {
-                    Text("Loading...")
-                }
-                
-                case .loaded(let films):
                 List(films) { film in
                     NavigationLink(value: film) {
                         HStack {
@@ -38,21 +26,15 @@ struct FilmListView: View {
                 .navigationDestination(for: Film.self) { film in
                     FilmDetailView(film: film)
                 }
-                case .error(let error):
-                Text(error)
-                    .foregroundStyle(Color.red)
             }
-        }
-        .task {
-            await filmsViewModel.fetch()
-        }
-    }
     
 }
 
+/*
 #Preview {
     
     @State @Previewable var vm = FilmsViewModel(service: MockAPIService())
     
-    FilmListView(filmsViewModel: vm)
+    FilmListView(films: )
 }
+*/

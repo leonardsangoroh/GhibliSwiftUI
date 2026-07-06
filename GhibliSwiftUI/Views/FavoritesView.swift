@@ -8,11 +8,26 @@
 import SwiftUI
 
 struct FavoritesView: View {
+    
+    let filmsViewModel: FilmsViewModel
+    var films: [Film] {
+        return []
+    }
+    
     var body: some View {
-        Text("Favorite Films")
+        NavigationStack {
+            Group {
+                if films.isEmpty {
+                    ContentUnavailableView("No favorites yet", systemImage: "heart")
+                } else {
+                    FilmListView(films: films)
+                }
+            }
+            .navigationTitle(Text("Favorites"))
+        }
     }
 }
 
 #Preview {
-    FavoritesView()
+    FavoritesView(filmsViewModel: FilmsViewModel(service: MockAPIService()))
 }
