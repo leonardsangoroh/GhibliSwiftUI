@@ -10,6 +10,7 @@ import SwiftUI
 struct FavoritesView: View {
     
     let filmsViewModel: FilmsViewModel
+    let favoritesViewModel: FavoritesViewModel
     var films: [Film] {
         return []
     }
@@ -20,7 +21,7 @@ struct FavoritesView: View {
                 if films.isEmpty {
                     ContentUnavailableView("No favorites yet", systemImage: "heart")
                 } else {
-                    FilmListView(films: films)
+                    FilmListView(films: films, favoritesViewModel: favoritesViewModel)
                 }
             }
             .navigationTitle(Text("Favorites"))
@@ -29,5 +30,5 @@ struct FavoritesView: View {
 }
 
 #Preview {
-    FavoritesView(filmsViewModel: FilmsViewModel(service: MockAPIService()))
+    FavoritesView(filmsViewModel: FilmsViewModel(service: MockAPIService()), favoritesViewModel: FavoritesViewModel(service: MockFavoriteStorage()))
 }
