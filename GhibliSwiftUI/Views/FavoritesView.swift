@@ -11,8 +11,16 @@ struct FavoritesView: View {
     
     let filmsViewModel: FilmsViewModel
     let favoritesViewModel: FavoritesViewModel
-    var films: [Film] {
-        return []
+    var films:[Film] {
+        let favorites = favoritesViewModel.favoriteIDs
+        
+        switch filmsViewModel.state {
+        case .loaded(let films):
+            return films.filter { favorites.contains($0.id) }
+        default:
+            return []
+        }
+        
     }
     
     var body: some View {

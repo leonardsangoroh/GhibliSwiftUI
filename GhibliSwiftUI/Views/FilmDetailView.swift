@@ -10,6 +10,7 @@ import SwiftUI
 struct FilmDetailView: View {
     
     let film: Film
+    var favoritesViewModel: FavoritesViewModel
     
     @State private var viewModel = FilmDetailViewModel()
     
@@ -40,6 +41,9 @@ struct FilmDetailView: View {
                     }
                     .padding()
                 }
+                .toolbar {
+                    FavoriteButton(filmID: film.id, favoritesViewModel: favoritesViewModel)
+                }
                 .task {
                     await viewModel.fetch(for: film)
                 }
@@ -48,6 +52,10 @@ struct FilmDetailView: View {
     }
 }
 
+
+
 #Preview {
-    FilmDetailView(film: Film.example)
+    NavigationStack {
+        FilmDetailView(film: Film.example,  favoritesViewModel: FavoritesViewModel())
+    }
 }
