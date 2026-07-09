@@ -24,7 +24,7 @@ struct ContentView: View {
                 SettingsView()
             }
             Tab (role: .search) {
-                SearchView()
+                SearchView(favoriteViewModel: FavoritesViewModel())
             }
         }
         .task {
