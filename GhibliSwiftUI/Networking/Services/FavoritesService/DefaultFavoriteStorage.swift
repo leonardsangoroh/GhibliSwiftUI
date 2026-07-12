@@ -13,10 +13,14 @@ struct DefaultFavoriteStorage: FavoriteStorage {
     
     func load()-> Set<String> {
         let array = UserDefaults.standard.stringArray(forKey: favoritesKey) ?? []
+        //debug print
+        print("I have loaded \(array.count) favorites")
         return Set(array)
     }
     
     func save(favoriteIDs: Set<String>) {
+        //debug print
+        print("Saving \(favoriteIDs.count) favorites")
         UserDefaults.standard.set(Array(favoriteIDs), forKey: favoritesKey)
     }
 }

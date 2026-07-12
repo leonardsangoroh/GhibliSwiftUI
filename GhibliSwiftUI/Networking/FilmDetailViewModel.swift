@@ -21,7 +21,7 @@ class FilmDetailViewModel {
     
     func fetch(for film: Film) async {
         
-        guard state.isLoading else { return }
+        guard !state.isLoading else { return }
         
         state = .loading
         var loadedPeople: [Person] = []

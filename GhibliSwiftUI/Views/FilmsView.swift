@@ -30,10 +30,13 @@ struct FilmsView: View {
                 case .error(let error):
                     Text(error)
                         .foregroundStyle(Color.red)
-                }
             }
-            .navigationTitle("Ghibli Films")
         }
+        .navigationTitle("Ghibli Films")
+        .task {
+            await filmsViewModel.fetch()
+        }
+    }
     }
 }
 

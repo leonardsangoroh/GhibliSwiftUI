@@ -21,23 +21,32 @@ struct FilmDetailView: View {
                     
                     FilmImageView(urlPath: film.bannerImage)
                         .frame(height: 300)
+                        .containerRelativeFrame(.horizontal)
                     
-                    VStack {
+                    VStack(alignment: .leading, spacing: 10) {
                         Text(film.title)
+                            .font(.title)
+                            .fontWeight(.bold)
+                        
+                        Grid(alignment: .leading) {
+                            InfoRow(label: "Director", value: film.director)
+                            InfoRow(label: "Producer", value: film.producer)
+                            InfoRow(label: "Release Date", value: film.releaseYear)
+                            InfoRow(label: "Running Time", value: "\(film.duration) minutes")
+                            InfoRow(label: "Score", value: "\(film.score)/100")
+                        }
+                        .padding(.vertical, 8)
                         
                         Divider()
                         
-                        switch viewModel.state {
-                        case .idle: EmptyView()
-                        case .loading: ProgressView()
-                        case .loaded(let people):
-                            ForEach(people) { person in
-                                Text(person.name)
-                            }
-                        case .error(let error):
-                            Text(error.localizedCapitalized)
-                                .foregroundStyle(.pink)
-                        }
+                        Text("Description")
+                            .font(.headline)
+                        
+                        Text(film.description)
+                
+                        Divider()
+                        
+                        CharacterSectionView(viewModel: viewModel)
                     }
                     .padding()
                 }
@@ -46,6 +55,71 @@ struct FilmDetailView: View {
                 }
                 .task {
                     await viewModel.fetch(for: film)
+                    print("FilmDetailView .task fired for film:", film.id)
+                }
+            }
+        }
+    }
+}
+
+
+fileprivate struct InfoRow: View {
+    
+    let label: String
+    let value: String
+    
+    var body: some View {
+        GridRow {
+            Text(label)
+                .font(.subheadline)
+                .fontWeight(.medium)
+                .frame(width: 100, alignment: .leading)
+            
+            Text(value)
+                .font(.subheadline)
+ 
+        }
+    }
+}
+
+fileprivate struct CharacterSectionView:  View {
+    
+    let viewModel: FilmDetailViewModel
+    
+    var body: some View {
+        GroupBox {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Characters")
+                    .font(.headline)
+                
+                switch viewModel.state {
+                    case .idle: EmptyView()
+                    case .loading:  ProgressView()
+                        
+                    case .loaded(let people):
+                        ForEach(people) { person in
+                            
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(person.name)
+                                
+                                HStack(spacing: 8) {
+                                    Label(person.gender, systemImage: "person.fill")
+                                    
+                                    Text("Age: \(person.age)")
+                                    Spacer()
+                                    Label(person.eyeColor, systemImage: "eye")
+                                    Text("Hair: \(person.hairColor)")
+                                }
+                                .foregroundColor(.secondary)
+                                .font(.caption)
+                                .lineLimit(1)
+                                
+                            }
+                        }
+                        
+                    case .error(let error):
+                        Text(error)
+                            .foregroundStyle(.pink)
                 }
             }
         }
@@ -54,8 +128,17 @@ struct FilmDetailView: View {
 
 
 
+
 #Preview {
     NavigationStack {
         FilmDetailView(film: Film.example,  favoritesViewModel: FavoritesViewModel())
+    }
+}
+
+
+#Preview {
+    NavigationStack {
+        FilmDetailView(film: Film.example,
+                         favoritesViewModel: FavoritesViewModel(service: MockFavoriteStorage()))
     }
 }
