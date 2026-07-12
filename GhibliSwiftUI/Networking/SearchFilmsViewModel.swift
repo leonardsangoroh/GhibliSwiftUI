@@ -11,6 +11,7 @@ import Foundation
 class SearchFilmsViewModel {
     
     var state: LoadingState<[Film]> = .idle
+    private var currentSearchTerm: String = ""
     
     private let service: APIService
     
@@ -20,6 +21,15 @@ class SearchFilmsViewModel {
     
     func fetch(for searchTerm: String) async {
         
+        self.currentSearchTerm = searchTerm
+        
+        guard !searchTerm.isEmpty else {
+            state = .idle
+            return
+        }
+        
+        state = .loading
+        
         // seconds delay
         try? await Task.sleep(for: .milliseconds(500))
         
@@ -27,14 +37,28 @@ class SearchFilmsViewModel {
             return
         }
         
-        state = .loading
-        
         do {
             let films = try await service.searchFilm(for: searchTerm)
             state = .loaded(films)
         } catch let error as APIError {
             self.state = .error(error.errorDescription ?? "Unknown Error")
+        } catch let error as CancellationError {
+            if currentSearchTerm == searchTerm {
+                self.state = .idle
+            }
         } catch {
+            self.state = .error(error.localizedDescription)
+        }
+    }
+    
+    func setError(_ error: Error, for searchTerm: String) {
+        guard currentSearchTerm == searchTerm else {
+            return
+        }
+        
+        if let error = error as? APIError {
+            self.state = .error(error.errorDescription ?? "Unknown Error")
+        } else {
             self.state = .error(error.localizedDescription)
         }
     }

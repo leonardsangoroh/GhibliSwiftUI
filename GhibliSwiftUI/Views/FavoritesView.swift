@@ -13,14 +13,16 @@ struct FavoritesView: View {
     let favoritesViewModel: FavoritesViewModel
     var films:[Film] {
         let favorites = favoritesViewModel.favoriteIDs
-        
+        // Debug prints
+        print("Trying to print favorites")
+        print(favorites)
+
         switch filmsViewModel.state {
         case .loaded(let films):
             return films.filter { favorites.contains($0.id) }
         default:
             return []
         }
-        
     }
     
     var body: some View {
@@ -38,5 +40,5 @@ struct FavoritesView: View {
 }
 
 #Preview {
-    FavoritesView(filmsViewModel: FilmsViewModel(service: MockAPIService()), favoritesViewModel: FavoritesViewModel(service: MockFavoriteStorage()))
+    FavoritesView(filmsViewModel:FilmsViewModel(), favoritesViewModel: FavoritesViewModel())
 }

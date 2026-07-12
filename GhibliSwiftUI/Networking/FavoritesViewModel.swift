@@ -12,10 +12,14 @@ class FavoritesViewModel {
     
     private(set) var favoriteIDs: Set<String> = []
     
-    private let service = DefaultFavoriteStorage()
+    private let service: FavoriteStorage
     
     init(service: FavoriteStorage = DefaultFavoriteStorage()) {
-        self.favoriteIDs = favoriteIDs
+        self.service = service
+        self.favoriteIDs = service.load()
+        //debug prints
+        print("Fav IDs")
+        print(favoriteIDs)
     }
     
     // store in user defaults

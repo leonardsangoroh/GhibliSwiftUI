@@ -15,10 +15,10 @@ struct ContentView: View {
     var body: some View {
         TabView {
             Tab("Movies", systemImage: "movieclapper") {
-                FilmsView(filmsViewModel: FilmsViewModel(), favoritesViewModel: favoritesViewModel)
+                FilmsView(filmsViewModel: filmsViewModel, favoritesViewModel: favoritesViewModel)
             }
             Tab ("Favorites", systemImage: "heart"){
-                FavoritesView(filmsViewModel: FilmsViewModel(), favoritesViewModel: favoritesViewModel)
+                FavoritesView(filmsViewModel: filmsViewModel, favoritesViewModel: favoritesViewModel)
             }
             Tab("Settings", systemImage: "gear") {
                 SettingsView()
